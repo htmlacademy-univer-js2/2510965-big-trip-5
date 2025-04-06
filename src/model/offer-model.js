@@ -3,7 +3,7 @@ import { offers } from '../mock/offer-mock';
 
 export class OfferModel {
   #offers = offers;
-  
+
   get offers() {
     return this.#offers;
   }
@@ -11,8 +11,8 @@ export class OfferModel {
   getOffersById(type, id){
     const offerGroup = this.#offers.find((offer) => offer.type === type);
     return id
-    ? offerGroup.offers.find((item) => item.id === id)
-    : offerGroup.offers;
+      ? offerGroup.offers.find((item) => item.id === id)
+      : offerGroup.offers;
   }
 
   getOffersByType(type) {
