@@ -2,7 +2,7 @@ import EditForm from './view/edit-form-view';
 import Point from './view/point-view';
 import Sort from './view/sort-view';
 import Filter from './view/filter-view';
-import {render, replace} from './framework/render';
+import { render, replace } from './framework/render';
 
 
 export default class MainPresenter {
@@ -20,36 +20,36 @@ export default class MainPresenter {
     this.#destinationModel = destinationModel;
   }
 
-  init(){
+  init() {
     const siteHeaderFiltersElement = document.querySelector('.trip-controls__filters');
     render(new Filter(), siteHeaderFiltersElement);
 
-    render(new Sort(), this.container);
+    render(new Sort(), this.#container);
 
     this.#container.appendChild(this.tripEventsList);
 
-    for (let i = 0; i < this.pointModel.getPoints().length; i++){
-      this.#renderPoint(this.pointModel.getPoints()[i]);
+    for (let i = 0; i < this.#pointModel.points.length; i++) {
+      this.#renderPoint(this.#pointModel.points[i]);
     }
   }
 
-  get pointModel(){
+  get pointModel() {
     return this.#pointModel;
   }
 
-  get offerModel(){
+  get offerModel() {
     return this.#offerModel;
   }
 
-  get destinationModel(){
+  get destinationModel() {
     return this.#destinationModel;
   }
 
-  get container(){
+  get container() {
     return this.#container;
   }
 
-  #renderPoint(pointData){
+  #renderPoint(pointData) {
     const escKeyDownHandler = (evt) => {
       if (evt.key === 'Escape') {
         evt.preventDefault();
@@ -58,34 +58,44 @@ export default class MainPresenter {
       }
     };
 
-    const onPointButtonClick = ()=> {
+    const onPointButtonClick = () => {
       replacePointToEdit();
       document.addEventListener('keydown', escKeyDownHandler);
     };
 
-    const onEditButtonClick = ()=> {
+    const onEditButtonClick = () => {
       replaceEditToPoint();
       document.removeEventListener('keydown', escKeyDownHandler);
     };
 
-    const onFormSubmit = (evt)=> {
+    const onFormSubmit = (evt) => {
       evt.preventDefault();
       replaceEditToPoint();
       document.removeEventListener('keydown', escKeyDownHandler);
     };
 
-    const point = new Point(pointData,this.offerModel,this.destinationModel,onPointButtonClick);
-    const editPoint = new EditForm(pointData,this.offerModel,this.destinationModel,
-      onFormSubmit,onEditButtonClick);
+    const point = new Point(
+      pointData,
+      this.#offerModel,
+      this.#destinationModel,
+      onPointButtonClick
+    );
+    const editPoint = new EditForm(
+      pointData,
+      this.#offerModel,
+      this.#destinationModel,
+      onFormSubmit,
+      onEditButtonClick
+    );
 
-    function replacePointToEdit(){
-      replace(editPoint,point);
+    function replacePointToEdit() {
+      replace(editPoint, point);
     }
 
-    function replaceEditToPoint(){
-      replace(point,editPoint);
+    function replaceEditToPoint() {
+      replace(point, editPoint);
     }
 
-    render(point,this.#container);
+    render(point, this.tripEventsList);
   }
 }
