@@ -1,4 +1,4 @@
-import { destinations } from "../mock/destination-mock";
+import { destinations } from '../mock/destination-mock';
 
 
 export class DestinationModel {
