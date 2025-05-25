@@ -1,8 +1,7 @@
-import MainPresenter from './presenter';
+import MainPresenter from './presenter/presenter';
 import { PointModel } from './model/point-model';
 import { DestinationModel } from './model/destination-model';
 import { OfferModel } from './model/offer-model';
-
 
 const pointModel = new PointModel();
 const destinationModel = new DestinationModel();
