@@ -1,7 +1,8 @@
-import {capitalizeString, getOfferKeyword, humanizeDate} from '../utils/utils.js';
+import {capitalizeString, getOfferKeyword, humanizeDate} from '../utils/utilsюоы';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+
 function createFormTemplate(state, offerModel, destinationModel){
   const {
     price,
