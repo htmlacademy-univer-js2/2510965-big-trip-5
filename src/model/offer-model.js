@@ -1,21 +1,20 @@
-import { offers } from '../mock/offer-mock';
+import {mockOffers} from '../mock/offer-mock.js';
 
+const FIRST_ELEMENT = 0;
 
 export class OfferModel {
-  #offers = offers;
+  #offers = mockOffers;
 
   get offers() {
     return this.#offers;
   }
 
   getOffersById(type, id){
-    const offerGroup = this.#offers.find((offer) => offer.type === type);
-    return id
-      ? offerGroup.offers.find((item) => item.id === id)
-      : offerGroup.offers;
+    return this.#offers.filter((offer)=> offer.type === type)[FIRST_ELEMENT]
+      .offers.find((item)=>item.id === id);
   }
 
-  getOffersByType(type) {
-    return this.#offers.find((offer) => offer.type === type);
+  getOfferByType(type){
+    return this.#offers.filter((offer) => offer.type === type).map((offer) => offer.offers).flat();
   }
 }

@@ -1,23 +1,23 @@
-import {capitalizeString, getOfferKeyword, humanizeDate} from '../utils/utils';
-import AbstractView from '../framework/view/abstract-view';
-
-
-function createFormTemplate(pointModel, offerModel, destinationModel){
+import {capitalizeString, getOfferKeyword, humanizeDate} from '../utils/utils.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+function createFormTemplate(state, offerModel, destinationModel){
   const {
-    base_price: price,
-    date_from: dateFrom,
-    date_to: dateTo,
-    destination: destinationId,
-    offers: offersId,
+    price,
+    dateFrom,
+    dateTo,
+    destination,
+    offers,
     type
-  } = pointModel;
+  } = state;
 
   const pointOffers = [];
-  for(const offerId of offersId){
+  for(const offerId of offers){
     pointOffers.push(offerModel.getOffersById(type, offerId));
   }
-  const allOffers = offerModel.getOffersByType(type).offers;
-  const {name, description, pictures} = destinationModel.getDestinationById(destinationId);
+  const allOffers = offerModel.getOfferByType(type).offers;
+  const {name, description, pictures} = destinationModel.getDestinationById(destination);
 
   return `
       <li class="trip-events__item">
@@ -88,9 +88,7 @@ function createFormTemplate(pointModel, offerModel, destinationModel){
                     </label>
                     <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
                     <datalist id="destination-list-1">
-                      <option value="Amsterdam"></option>
-                      <option value="Geneva"></option>
-                      <option value="Chamonix"></option>
+                      ${destinationModel.destinations.map((dest)=>`<option value="${dest.name}"></option>`)}
                     </datalist>
                   </div>
 
@@ -157,25 +155,103 @@ function createFormTemplate(pointModel, offerModel, destinationModel){
   `;
 }
 
-export default class EditForm extends AbstractView{
-  #pointModel;
-  #offerModel;
-  #destinationModel;
-  #editForm;
-  #closeButton;
+export default class EditForm extends AbstractStatefulView{
+  #point;
+  #allOffers;
+  #allDestination;
+  #onFormSubmit;
+  #onEditButtonClick;
+  #datepickerStart;
+  #datepickerEnd;
 
-  constructor(pointModel, offerModel, destinationModel, onFormSubmit, onEditButtonClick) {
+  constructor(pointModel,offerModel,destinationModel,onFormSubmit,onEditButtonClick){
     super();
-    this.#pointModel = pointModel;
-    this.#offerModel = offerModel;
-    this.#destinationModel = destinationModel;
-    this.#editForm = this.element.querySelector('.event--edit');
-    this.#editForm.addEventListener('submit', onFormSubmit);
-    this.#closeButton = this.element.querySelector('.event__rollup-btn');
-    this.#closeButton.addEventListener('click', onEditButtonClick);
+    this._setState(this.parsePointToState(pointModel));
+    this.#point = pointModel;
+    this.#allOffers = offerModel;
+    this.#allDestination = destinationModel;
+    this.#onEditButtonClick = onEditButtonClick;
+    this.#onFormSubmit = onFormSubmit;
+    this._restoreHandlers();
   }
 
   get template() {
-    return createFormTemplate(this.#pointModel, this.#offerModel, this.#destinationModel);
+    return createFormTemplate(this._state,this.#allOffers,this.#allDestination);
+  }
+
+  _restoreHandlers(){
+    this.element.querySelector('form').addEventListener('submit', this.#onFormStaneSubmit);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onEditButtonClick);
+    this.element.querySelector('.event__type-group').addEventListener('change',(evt) => {
+      this.#onTypeListChange(evt);
+    });
+    this.element.querySelector('.event__input--destination').addEventListener('change',(evt) => {
+      this.#onCityChange(evt);
+    });
+    this.#setDatepickerStart();
+    this.#setDatepickerEnd();
+  }
+
+  #setDatepickerStart = () => {
+    if (this.#datepickerStart) {
+      this.#datepickerStart.destroy();
+    }
+    this.#datepickerStart = flatpickr(this.element.querySelector('#event-start-time-1'), {
+      enableTime: true,
+      dateFormat: 'd/m/y H:i',
+      onChange: (selectedDates) => {
+        if(selectedDates[0] < new Date(this._state.dateTo)){
+          this._setState({ dateFrom: selectedDates[0].toISOString()});
+        }
+      }
+    });
+  };
+
+  #setDatepickerEnd = () => {
+    if (this.#datepickerEnd) {
+      this.#datepickerEnd.destroy();
+    }
+    this.#datepickerEnd = flatpickr(this.element.querySelector('#event-end-time-1'), {
+      enableTime: true,
+      dateFormat: 'd/m/y H:i',
+      onChange: (selectedDates) => {
+        if(selectedDates[0] > new Date(this._state.dateFrom)){
+          this._setState({ dateTo: selectedDates[0].toISOString()});
+        }
+      }
+    });
+  };
+
+  #onFormStaneSubmit = (evt) => {
+    evt.preventDefault();
+    this.#onFormSubmit(evt, EditForm.parseStateToPoint(this._state));
+  };
+
+  #onCityChange = (evt) => {
+    const city = evt.target.value;
+    const newDestination = this.#allDestination.destinations.find((destination)=> destination.name === city).id;
+    this.updateElement({
+      destination:newDestination
+    });
+  };
+
+  #onTypeListChange = (evt)=>{
+    evt.preventDefault();
+    const targetType = evt.target.value;
+    const typeOffers = this.#allOffers.getOfferByType(targetType);
+    this.updateElement({
+      type:targetType,
+      typeOffers:typeOffers,
+    });
+  };
+
+  parsePointToState(point){
+    return{
+      ...point,
+    };
+  }
+
+  static parseStateToPoint(state){
+    return { ...state };
   }
 }
