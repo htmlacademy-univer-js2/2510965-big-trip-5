@@ -10,6 +10,6 @@ const offerModel = new OfferModel();
 
 const siteBodySortElement = document.querySelector('.trip-events');
 
-const mainPresenter = new MainPresenter(siteBodySortElement, pointModel, destinationModel, offerModel);
+const mainPresenter = new MainPresenter(siteBodySortElement, pointModel, offerModel, destinationModel);
 
 mainPresenter.init();
