@@ -1,11 +1,11 @@
-import {getRandomNumber} from '../utils/utils';
+import {getRandomNumber} from '../utils/utils.js';
 
 const mockPoints = [
   {
     'id': 1,
-    'base_price': getRandomNumber(10000, 500),
-    'date_from': '2025-02-10T01:54:14.857Z',
-    'date_to': '2025-02-10T18:13:14.857Z',
+    'price': getRandomNumber(10000, 500),
+    'dateFrom': '2025-02-10T01:54:14.857Z',
+    'dateTo': '2025-02-10T18:13:14.857Z',
     'destination': 1,
     'is_favorite': false,
     'offers': [],
@@ -13,9 +13,9 @@ const mockPoints = [
   },
   {
     'id': 2,
-    'base_price': getRandomNumber(10000, 500),
-    'date_from': '2025-02-11T18:18:14.857Z',
-    'date_to': '2025-02-13T03:59:14.857Z',
+    'price': getRandomNumber(10000, 500),
+    'dateFrom': '2025-02-11T18:18:14.857Z',
+    'dateTo': '2025-02-13T03:59:14.857Z',
     'destination': 2,
     'is_favorite': true,
     'offers': [
@@ -26,9 +26,9 @@ const mockPoints = [
   },
   {
     'id': 3,
-    'base_price': getRandomNumber(10000, 500),
-    'date_from': '2025-02-13T18:58:14.857Z',
-    'date_to': '2025-02-14T22:39:14.857Z',
+    'price': getRandomNumber(10000, 500),
+    'dateFrom': '2025-02-13T18:58:14.857Z',
+    'dateTo': '2025-02-14T22:39:14.857Z',
     'destination': 1,
     'is_favorite': false,
     'offers': [],
@@ -36,9 +36,9 @@ const mockPoints = [
   },
   {
     'id': 4,
-    'base_price': getRandomNumber(10000, 500),
-    'date_from': '2025-02-16T17:14:14.857Z',
-    'date_to': '2025-02-17T12:48:14.857Z',
+    'price': getRandomNumber(10000, 500),
+    'dateFrom': '2025-02-16T17:14:14.857Z',
+    'dateTo': '2025-02-17T12:48:14.857Z',
     'destination': 3,
     'is_favorite': false,
     'offers': [
@@ -50,9 +50,9 @@ const mockPoints = [
   },
   {
     'id': 5,
-    'base_price': getRandomNumber(10000, 500),
-    'date_from': '2025-02-19T11:32:14.857Z',
-    'date_to': '2025-02-19T19:11:14.857Z',
+    'price': getRandomNumber(10000, 500),
+    'dateFrom': '2025-02-19T11:32:14.857Z',
+    'dateTo': '2025-02-19T19:11:14.857Z',
     'destination': 4,
     'is_favorite': true,
     'offers': [],
@@ -60,9 +60,9 @@ const mockPoints = [
   },
   {
     'id': 6,
-    'base_price': getRandomNumber(10000, 500),
-    'date_from': '2025-02-21T12:42:14.857Z',
-    'date_to': '2025-02-22T02:09:14.857Z',
+    'price': getRandomNumber(10000, 500),
+    'dateFrom': '2025-02-21T12:42:14.857Z',
+    'dateTo': '2025-02-22T02:09:14.857Z',
     'destination': 5,
     'is_favorite': false,
     'offers': [
@@ -73,9 +73,9 @@ const mockPoints = [
   },
   {
     'id': 7,
-    'base_price': getRandomNumber(10000, 500),
-    'date_from': '2025-02-22T11:06:14.857Z',
-    'date_to': '2025-02-23T04:29:14.857Z',
+    'price': getRandomNumber(10000, 500),
+    'dateFrom': '2025-02-22T11:06:14.857Z',
+    'dateTo': '2025-02-23T04:29:14.857Z',
     'destination': 6,
     'is_favorite': true,
     'offers': [],
@@ -83,9 +83,9 @@ const mockPoints = [
   },
   {
     'id': 8,
-    'base_price': getRandomNumber(10000, 500),
-    'date_from': '2025-02-24T12:19:14.857Z',
-    'date_to': '2025-02-25T23:24:14.857Z',
+    'price': getRandomNumber(10000, 500),
+    'dateFrom': '2025-02-24T12:19:14.857Z',
+    'dateTo': '2025-02-25T23:24:14.857Z',
     'destination': 5,
     'is_favorite': true,
     'offers': [
@@ -95,9 +95,9 @@ const mockPoints = [
   },
   {
     'id': 9,
-    'base_price': getRandomNumber(10000, 500),
-    'date_from': '2025-02-27T17:36:14.857Z',
-    'date_to': '2025-03-01T03:31:14.857Z',
+    'price': getRandomNumber(10000, 500),
+    'dateFrom': '2025-02-27T17:36:14.857Z',
+    'dateTo': '2025-03-01T03:31:14.857Z',
     'destination': 7,
     'is_favorite': true,
     'offers': [
@@ -108,7 +108,7 @@ const mockPoints = [
   },
   {
     'id': 10,
-    'base_price': getRandomNumber(10001, 500),
+    'base_price': getRandomNumber(10000, 500),
     'date_from': '2025-04-04T04:45:14.857Z',
     'date_to': '2025-04-04T08:19:14.857Z',
     'destination': 6,
