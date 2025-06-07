@@ -15,3 +15,8 @@ export const FilterType = {
   PRESENT: 'present',
   PAST: 'past'
 };
+
+export const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
