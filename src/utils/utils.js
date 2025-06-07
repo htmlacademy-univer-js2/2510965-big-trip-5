@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { TimeConstants } from '../constants/const';
+import {TimeConstants} from '../constants/const.js';
 
 
 function getRandomNumber(max, min = 0) {
@@ -40,9 +40,28 @@ function getOfferKeyword(title){
   return title.split(' ').slice(-1);
 }
 
+function isPresentPoint(dateFrom, dateTo) {
+  return dateFrom && dateTo && !dayjs().isAfter(dateTo, 'D') && !dayjs().isBefore(dateFrom, 'D');
+}
+
+function isPastPoint(dueDate) {
+  return dayjs().isAfter(dueDate, 'day');
+}
+
+function isFuturePoint(dueDate) {
+  return dayjs().isBefore(dueDate, 'day');
+}
+
+function updateItem(items, update) {
+  return items.map((item) => item.id === update.id ? update : item);
+}
+
 export {getRandomNumber,
   humanizeDate,
   getDurationTime,
   capitalizeString,
   getOfferKeyword,
-};
+  isFuturePoint,
+  isPastPoint,
+  isPresentPoint,
+  updateItem};
