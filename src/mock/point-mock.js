@@ -1,4 +1,4 @@
-import {getRandomNumber} from '../utils/utils';
+import {getRandomNumber} from '../utils/utils.js';
 
 const mockPoints = [
   {
