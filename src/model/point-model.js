@@ -1,8 +1,8 @@
-import { points } from '../mock/point-mock';
-
+import {mockPoints} from '../mock/point-mock.js';
+import {toCamelCase} from '../utils/utils.js';
 
 export class PointModel {
-  #points = points;
+  #points = mockPoints.map((point)=>toCamelCase(point));
 
   get points() {
     return this.#points;
