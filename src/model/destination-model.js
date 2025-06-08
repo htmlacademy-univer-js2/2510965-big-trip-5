@@ -1,14 +1,13 @@
-import { destinations } from '../mock/destination-mock';
-
+import {mockDestinations} from '../mock/destination-mock';
 
 export class DestinationModel {
-  #destination = destinations;
+  #destination = mockDestinations;
 
   get destinations() {
     return this.#destination;
   }
 
   getDestinationById(id){
-    return this.#destination.find((item)=>item.id === id);
+    return this.#destination.find((item)=>item.id === id) || {name: '', description: '', pictures: []};
   }
 }

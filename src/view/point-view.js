@@ -1,4 +1,4 @@
-import {capitalizeString, getDurationTime, humanizeDate} from '../utils/utils.js';
+import {capitalizeString, getDurationTime, humanizeDate} from '../utils/utils';
 import AbstractView from '../framework/view/abstract-view';
 
 function createPointTemplate(pointModel, offerModel, destinationModel) {
@@ -66,15 +66,18 @@ export default class Point extends AbstractView{
   #pointModel;
   #offerModel;
   #destinationModel;
-  #closeButton;
+  #rollupButton;
+  #favoriteButton;
 
-  constructor(pointModel, offerModel, destinationModel, onButtonClick) {
+  constructor(pointModel,offerModel,destinationModel,onEditButtonClick,onFavoriteButtonClick) {
     super();
     this.#pointModel = pointModel;
     this.#offerModel = offerModel;
     this.#destinationModel = destinationModel;
-    this.#closeButton = this.element.querySelector('.event__rollup-btn');
-    this.#closeButton.addEventListener('click', onButtonClick);
+    this.#rollupButton = this.element.querySelector('.event__rollup-btn');
+    this.#favoriteButton = this.element.querySelector('.event__favorite-btn');
+    this.#rollupButton.addEventListener('click',onEditButtonClick);
+    this.#favoriteButton.addEventListener('click', onFavoriteButtonClick);
   }
 
   get template() {
