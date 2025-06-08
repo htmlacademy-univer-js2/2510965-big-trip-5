@@ -1,13 +1,35 @@
-import {mockDestinations} from '../mock/destination-mock';
+import { UpdateType } from '../constants/const';
+import Observable from '../framework/observable';
 
-export class DestinationModel {
-  #destination = mockDestinations;
+export default class DestinationModel extends Observable {
+  #destinations = [];
+  #destinationsApiService;
+  #isLoaded = false;
 
-  get destinations() {
-    return this.#destination;
+  constructor(destinationsApiService) {
+    super();
+    this.#destinationsApiService = destinationsApiService;
   }
 
-  getDestinationById(id){
-    return this.#destination.find((item)=>item.id === id) || {name: '', description: '', pictures: []};
+  async init() {
+    try {
+      this.#destinations = await this.#destinationsApiService.destinations;
+    } catch (err) {
+      this.#destinations = [];
+    }
+    this.#isLoaded = true;
+    this._notify(UpdateType.INIT);
+  }
+
+  get destinations() {
+    return this.#destinations;
+  }
+
+  get isLoaded() {
+    return this.#isLoaded;
+  }
+
+  getDestinationById(id) {
+    return this.#destinations.find((item) => item.id === id) || { name: '', description: '', pictures: [] };
   }
 }

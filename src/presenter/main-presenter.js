@@ -6,6 +6,7 @@ import PointPresenter from './point-presenter';
 import {filter} from '../utils/filter';
 import NewPointPresenter from './new-point-presenter';
 import {SortType, UserAction, UpdateType, FilterType} from '../constants/const';
+import LoadingView from '../view/loading-view.js';
 
 export default class MainPresenter {
   #pointModel;
@@ -18,6 +19,8 @@ export default class MainPresenter {
   #pointsPresenters = new Map();
   #sortComponent = null;
   #actualSortType = SortType.DAY;
+  #loadingComponent = new LoadingView();
+  #isLoading = true;
 
   constructor(container,pointModel,offerModel,destinationModel, filterModel, onNewPointDestroy) {
     const tripEventsList = document.createElement('ul');
@@ -57,15 +60,23 @@ export default class MainPresenter {
     this.#renderPoints();
   };
 
-  #renderSort(){
-    this.#sortComponent = new Sort({currentSortType: this.#actualSortType, onSortTypeChange: this.#onSortTypeChange});
-    render(this.#sortComponent,this.#bigContainer,RenderPosition.AFTERBEGIN);
+  #renderSort() {
+    if (this.#sortComponent) {
+      remove(this.#sortComponent); // Удаляем старый компонент [[1]]
+    }
+    this.#sortComponent = new Sort({ currentSortType: this.#actualSortType, onSortTypeChange: this.#onSortTypeChange });
+    render(this.#sortComponent, this.#bigContainer, RenderPosition.AFTERBEGIN);
   }
 
   #renderPoints(){
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
     const pointsCount = this.points.length;
-    if (pointsCount === 0){
-      render(new EmptyList(this.#filterModel.filter),this.#listContainer,RenderPosition.AFTEREND);
+    if (pointsCount === 0) {
+      render(new EmptyList(this.#filterModel.filter), this.#listContainer, RenderPosition.AFTEREND);
       return;
     }
     this.#renderSort();
@@ -86,6 +97,7 @@ export default class MainPresenter {
     this.#pointsPresenters.forEach((pointPresenter)=>pointPresenter.destroy());
     this.#pointsPresenters.clear();
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
     if (resetSortType) {
       this.#actualSortType = SortType.DAY;
     }
@@ -124,8 +136,18 @@ export default class MainPresenter {
         this.#clearPointList({resetRenderedPointCount: true, resetSortType: true});
         this.#renderPoints();
         break;
+      case UpdateType.INIT:
+        if (this.#pointModel.isLoaded && this.#offerModel.isLoaded && this.#destinationModel.isLoaded) {
+          this.#isLoading = false;
+          remove(this.#loadingComponent);
+          this.#renderPoints();
+        }
     }
   };
+
+  #renderLoading() {
+    render(this.#loadingComponent, this.#listContainer, RenderPosition.AFTERBEGIN);
+  }
 
   get points(){
     const filterType = this.#filterModel.filter;

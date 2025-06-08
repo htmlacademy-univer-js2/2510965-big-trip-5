@@ -16,7 +16,7 @@ function createFormTemplate(state, offerModel, destinationModel, isNewPoint){
 
   const pointOffers = [];
   for(const offerId of offers){
-    pointOffers.push(offerModel.getOffersById(type, offerId));
+    pointOffers.push(offerModel.getOfferById(type, offerId));
   }
   const allOffers = offerModel.getOfferByType(type).offers;
   const {name, description, pictures} = destinationModel.getDestinationById(destination);
