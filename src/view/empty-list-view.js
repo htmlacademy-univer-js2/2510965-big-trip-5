@@ -10,11 +10,14 @@ function createEmptyListTemplate() {
 }
 
 export default class EmptyList extends AbstractView{
-  constructor() {
+  #actualFilter;
+
+  constructor(actualFilter) {
     super();
+    this.#actualFilter = actualFilter;
   }
 
   get template(){
-    return createEmptyListTemplate();
+    return createEmptyListTemplate(this.#actualFilter);
   }
 }
