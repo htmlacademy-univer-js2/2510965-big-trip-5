@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {TimeConstants} from '../constants/const.js';
+import {TimeConstants} from '../constants/const';
 
 
 function getRandomNumber(max, min = 0) {
@@ -52,10 +52,6 @@ function isFuturePoint(dueDate) {
   return dayjs().isBefore(dueDate, 'day');
 }
 
-function updateItem(items, update) {
-  return items.map((item) => item.id === update.id ? update : item);
-}
-
 function sortPointByDay(pointA, pointB) {
   return dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
 }
@@ -81,6 +77,10 @@ function toCamelCase(obj){
   }, {});
 }
 
+function isDatesEqual(dateA, dateB) {
+  return (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+}
+
 export {getRandomNumber,
   humanizeDate,
   getDurationTime,
@@ -89,8 +89,8 @@ export {getRandomNumber,
   isFuturePoint,
   isPastPoint,
   isPresentPoint,
-  updateItem,
   sortPointByDay,
   sortPointByTime,
-  toCamelCase
+  toCamelCase,
+  isDatesEqual
 };
