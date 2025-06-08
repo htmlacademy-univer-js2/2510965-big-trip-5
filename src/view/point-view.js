@@ -14,7 +14,7 @@ function createPointTemplate(pointModel, offerModel, destinationModel) {
 
   const pointOffers = [];
   for(const offerId of offers){
-    pointOffers.push(offerModel.getOffersById(type, offerId));
+    pointOffers.push(offerModel.getOfferById(type, offerId));
   }
 
   const {name} = destinationModel.getDestinationById(destination);

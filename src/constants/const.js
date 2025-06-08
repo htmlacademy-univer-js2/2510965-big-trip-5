@@ -38,7 +38,8 @@ const UserAction = {
 const UpdateType = {
   PATCH:'PATCH',
   MINOR:'MINOR',
-  MAJOR:'MAJOR'
+  MAJOR:'MAJOR',
+  INIT: 'INIT',
 };
 
 const emptyListMessages = {
@@ -48,6 +49,11 @@ const emptyListMessages = {
   [FilterType.FUTURE]: 'There are no future events now'
 };
 
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+};
+
 export {
   TimeConstants,
   FilterType,
@@ -55,5 +61,6 @@ export {
   SortType,
   UserAction,
   UpdateType,
-  emptyListMessages
+  emptyListMessages,
+  Method
 };
