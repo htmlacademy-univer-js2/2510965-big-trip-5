@@ -1,6 +1,11 @@
 import ApiService from '../framework/api-service.js';
-import {Method} from '../constants/const';
 
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
+};
 
 export default class PointsApiService extends ApiService {
   get points() {
@@ -55,7 +60,6 @@ export default class PointsApiService extends ApiService {
     delete adaptedTask.basePrice;
     delete adaptedTask.isFavorite;
     delete adaptedTask.typeOffers;
-
     return adaptedTask;
   }
 }
