@@ -1,6 +1,7 @@
-import {remove, render, RenderPosition} from '../framework/render.js';
-import {UserAction, UpdateType} from '../constants/const';
-import EditFormView from '../view/edit-form-view';
+import { remove, render, RenderPosition } from '../framework/render.js';
+import { UserAction, UpdateType } from '../constants/const.js';
+import EditFormView from '../view/edit-form-view.js';
+import { OnEscKeyDown } from '../utils/utils.js';
 
 export default class NewPointPresenter {
   #pointListContainer = null;
@@ -15,15 +16,15 @@ export default class NewPointPresenter {
     this.#onDestroy = onDestroy;
   }
 
-  init(offerModel,destinationModel) {
+  init(offerModel, destinationModel) {
     if (this.#pointEditComponent !== null) {
       return;
     }
     const blankPoint = {
       basePrice: 0,
-      dateFrom: new Date().toISOString(),
-      dateTo: new Date().toISOString(),
-      destination: 1,
+      dateFrom: '',
+      dateTo: '',
+      destination: '',
       offers: [],
       type: 'flight',
       isFavorite: false
@@ -39,7 +40,7 @@ export default class NewPointPresenter {
 
     render(this.#pointEditComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);
 
-    document.addEventListener('keydown', this.#escKeyDownHandler);
+    document.addEventListener('keydown', this.#onEscKeyDown);
   }
 
   destroy() {
@@ -52,7 +53,7 @@ export default class NewPointPresenter {
     remove(this.#pointEditComponent);
     this.#pointEditComponent = null;
 
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
+    document.removeEventListener('keydown', this.#onEscKeyDown);
   }
 
   setSaving() {
@@ -86,10 +87,7 @@ export default class NewPointPresenter {
     this.destroy();
   };
 
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      this.destroy();
-    }
+  #onEscKeyDown = (evt) => {
+    OnEscKeyDown(evt, this.destroy.bind(this));
   };
 }

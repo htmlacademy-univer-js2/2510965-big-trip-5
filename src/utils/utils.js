@@ -1,43 +1,32 @@
 import dayjs from 'dayjs';
-import {TimeConstants} from '../constants/const';
+
+const DATE_FORMAT = 'D MMM';
+const DAYS_DIVIDER = 1000 * 60 * 60 * 24;
+const HOURS_DIVIDER = 1000 * 60 * 60;
+const MINUTES_DIVIDER = 1000 * 60;
 
 
-function getRandomNumber(max, min = 0) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function humanizeDate(date, format = TimeConstants.FORMATS.DATE) {
-  return date ? dayjs(date).format(format) : '';
+function humanizeDate(dueDate, format = DATE_FORMAT) {
+  return dueDate ? dayjs(dueDate).format(format) : '';
 }
 
 function getDurationTime(start, end) {
-  const startDate = dayjs(start);
-  const endDate = dayjs(end);
-  const duration = endDate.diff(startDate);
-
-  const days = Math.floor(duration / TimeConstants.DIVIDERS.DAY);
-  const hours = Math.floor((duration % TimeConstants.DIVIDERS.DAY) / TimeConstants.DIVIDERS.HOUR);
-  const minutes = Math.floor((duration % TimeConstants.DIVIDERS.HOUR) / TimeConstants.DIVIDERS.MINUTE);
-
-  const formatUnit = (value) => value.toString().padStart(2, '0');
+  end = dayjs(end);
+  const duration = end.diff(start);
+  const days = Math.floor(duration / DAYS_DIVIDER);
+  const hours = Math.floor((duration % DAYS_DIVIDER) / HOURS_DIVIDER);
+  const minutes = Math.floor((duration % HOURS_DIVIDER) / MINUTES_DIVIDER);
 
   if (days > 0) {
-    return `${formatUnit(days)}D ${formatUnit(hours)}H ${formatUnit(minutes)}M`;
+    return `${days.toString().padStart(2, '0')}D ${hours.toString().padStart(2, '0')}H ${minutes.toString().padStart(2, '0')}M`;
+  } else if (hours > 0) {
+    return `${hours.toString().padStart(2, '0')}H ${minutes.toString().padStart(2, '0')}M`;
   }
-
-  if (hours > 0) {
-    return `${formatUnit(hours)}H ${formatUnit(minutes)}M`;
-  }
-
-  return `${formatUnit(minutes)}M`;
+  return `${minutes.toString().padStart(2, '0')}M`;
 }
 
-function capitalizeString(word){
+function capitalizeString(word) {
   return word[0].toUpperCase() + word.slice(1);
-}
-
-function getOfferKeyword(title){
-  return title.split(' ').slice(-1);
 }
 
 function isPresentPoint(dateFrom, dateTo) {
@@ -45,11 +34,11 @@ function isPresentPoint(dateFrom, dateTo) {
 }
 
 function isPastPoint(dueDate) {
-  return dayjs().isAfter(dueDate, 'day');
+  return dueDate && dayjs().isAfter(dueDate, 'D');
 }
 
 function isFuturePoint(dueDate) {
-  return dayjs().isBefore(dueDate, 'day');
+  return dueDate && dayjs().isBefore(dueDate, 'D');
 }
 
 function sortPointByDay(pointA, pointB) {
@@ -62,35 +51,26 @@ function sortPointByTime(pointA, pointB) {
   return durationB - durationA;
 }
 
-function toCamelCase(obj){
-  const keyMap = {
-    'base_price': 'basePrice',
-    'date_from': 'dateFrom',
-    'date_to': 'dateTo',
-    'is_favorite': 'isFavorite'
-  };
-
-  return Object.keys(obj).reduce((acc, key) => {
-    const camelKey = keyMap[key] || key;
-    acc[camelKey] = obj[key];
-    return acc;
-  }, {});
-}
-
 function isDatesEqual(dateA, dateB) {
   return (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
 }
 
-export {getRandomNumber,
+function OnEscKeyDown(evt, callback) {
+  if (evt.key === 'Escape' || evt.key === 'Esc') {
+    evt.preventDefault();
+    callback();
+  }
+}
+
+export {
   humanizeDate,
   getDurationTime,
   capitalizeString,
-  getOfferKeyword,
+  isPresentPoint,
   isFuturePoint,
   isPastPoint,
-  isPresentPoint,
   sortPointByDay,
   sortPointByTime,
-  toCamelCase,
-  isDatesEqual
+  isDatesEqual,
+  OnEscKeyDown
 };

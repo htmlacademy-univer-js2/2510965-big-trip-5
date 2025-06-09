@@ -1,9 +1,13 @@
-import Point from '../view/point-view';
-import EditForm from '../view/edit-form-view';
-import {render, replace, remove} from '../framework/render';
-import {Mode, UserAction, UpdateType} from '../constants/const';
-import {isDatesEqual} from '../utils/utils';
+import { render, replace, remove } from '../framework/render';
+import EditFormView from '../view/edit-form-view';
+import PointView from '../view/point-view';
+import { UserAction, UpdateType } from '../constants/const.js';
+import { isDatesEqual, OnEscKeyDown } from '../utils/utils.js';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
 
 export default class PointPresenter {
   #pointListContainer;
@@ -29,14 +33,14 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointComponent;
     const prevEditPointComponent = this.#pointEditComponent;
 
-    this.#pointComponent = new Point(
+    this.#pointComponent = new PointView(
       this.#pointModel,
       this.#offerModel,
       this.#destinationModel,
       this.#onPointButtonClick,
       this.#onFavoriteButtonClick);
 
-    this.#pointEditComponent = new EditForm(
+    this.#pointEditComponent = new EditFormView(
       this.#pointModel,
       this.#offerModel,
       this.#destinationModel,
@@ -61,66 +65,13 @@ export default class PointPresenter {
     remove(prevEditPointComponent);
   }
 
-  #replaceCardToForm(){
-    replace(this.#pointEditComponent, this.#pointComponent);
-    document.addEventListener('keydown', this.#escKeyDownHandler);
-    this.#onModeChange();
-    this.#mode = Mode.EDITING;
-  }
-
-  #replaceFormToCard(){
-    replace(this.#pointComponent, this.#pointEditComponent);
-    document.removeEventListener('keydown', this.#escKeyDownHandler);
-    this.#mode = Mode.DEFAULT;
-  }
-
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape') {
-      evt.preventDefault();
-      this.#replaceFormToCard();
-    }
-  };
-
-  #onPointButtonClick = ()=> {
-    this.#replaceCardToForm();
-  };
-
-  #onEditButtonClick = ()=> {
-    this.#replaceFormToCard();
-  };
-
-  #onFavoriteButtonClick = () => {
-    this.#onPointChange(
-      UserAction.UPDATE_POINT,
-      UpdateType.MINOR,
-      {...this.#pointModel,isFavorite:!this.#pointModel.isFavorite});
-  };
-
-  #onFormSubmit = (evt,editPoint)=> {
-    evt.preventDefault();
-    const isMinorUpdate = !isDatesEqual(this.#pointModel.dateFrom, editPoint.dateTo);
-    this.#onPointChange(
-      UserAction.UPDATE_POINT,
-      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
-      editPoint);
-    this.#replaceFormToCard();
-  };
-
-  #onDeleteClick = (point) => {
-    this.#onPointChange(
-      UserAction.DELETE_POINT,
-      UpdateType.MINOR,
-      point,
-    );
-  };
-
   destroy() {
     remove(this.#pointComponent);
     remove(this.#pointEditComponent);
   }
 
-  resetView(){
-    if(this.#mode !== Mode.DEFAULT){
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
       this.#replaceFormToCard();
     }
   }
@@ -159,4 +110,55 @@ export default class PointPresenter {
     };
     this.#pointEditComponent.shake(resetFormState);
   }
+
+  #replaceCardToForm() {
+    replace(this.#pointEditComponent, this.#pointComponent);
+    document.addEventListener('keydown', this.#onEscKeyDown);
+    this.#onModeChange();
+    this.#mode = Mode.EDITING;
+  }
+
+  #replaceFormToCard() {
+    this.#pointEditComponent.resetToInitialState();
+    replace(this.#pointComponent, this.#pointEditComponent);
+    document.removeEventListener('keydown', this.#onEscKeyDown);
+    this.#mode = Mode.DEFAULT;
+  }
+
+  #onEscKeyDown = (evt) => {
+    OnEscKeyDown(evt, this.#replaceFormToCard.bind(this));
+  };
+
+  #onPointButtonClick = () => {
+    this.#replaceCardToForm();
+  };
+
+  #onEditButtonClick = () => {
+    this.#replaceFormToCard();
+  };
+
+  #onFavoriteButtonClick = () => {
+    this.#onPointChange(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      { ...this.#pointModel, isFavorite: !this.#pointModel.isFavorite });
+  };
+
+  #onFormSubmit = (evt, editPoint) => {
+    evt.preventDefault();
+    const isMinorUpdate = !isDatesEqual(this.#pointModel.dateFrom, editPoint.dateTo);
+    this.#onPointChange(
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
+      editPoint);
+    this.#replaceFormToCard();
+  };
+
+  #onDeleteClick = (point) => {
+    this.#onPointChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
+  };
 }
